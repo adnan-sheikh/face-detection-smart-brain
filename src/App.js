@@ -46,7 +46,7 @@ const particleOptions = {
               },
               size: {
                 random: true,
-                value: 5,
+                value: 3,
               },
             },
           };
