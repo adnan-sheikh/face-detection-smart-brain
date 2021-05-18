@@ -3,15 +3,16 @@ import './App.css';
 import 'tachyons';
 
 import Navigation from './Components/Navigation/Navigation';
+import Logo from './Components/Logo/Logo';
 
 class App extends Component {
   render() {
     return (
       <div className='App'>
         <Navigation />
-        {/* <Logo />
-      <ImageLinkForm />
-      <FaceRecognition /> */}
+        <Logo />
+        {/* <ImageLinkForm />
+        <FaceRecognition /> */}
       </div>
     );
   }
