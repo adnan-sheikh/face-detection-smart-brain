@@ -8,30 +8,7 @@ import Logo from './Components/Logo/Logo';
 import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.particlesInit = this.particlesInit.bind(this);
-    this.particlesLoaded = this.particlesLoaded.bind(this);
-  }
-
-  particlesInit(main) {
-    console.log(main);
-  }
-
-  particlesLoaded(container) {
-    console.log(container);
-  }
-
-  render() {
-    return (
-      <div className='App'>
-        <Particles
-          className='particles'
-          id='tsparticles'
-          init={this.particlesInit}
-          loaded={this.particlesLoaded}
-          options={{
+const particleOptions = {
             particles: {
               color: {
                 value: '#ffffff',
@@ -72,7 +49,32 @@ class App extends Component {
                 value: 5,
               },
             },
-          }}
+          };
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.particlesInit = this.particlesInit.bind(this);
+    this.particlesLoaded = this.particlesLoaded.bind(this);
+  }
+
+  particlesInit(main) {
+    console.log(main);
+  }
+
+  particlesLoaded(container) {
+    console.log(container);
+  }
+
+  render() {
+    return (
+      <div className='App'>
+        <Particles
+          className='particles'
+          id='tsparticles'
+          init={this.particlesInit}
+          loaded={this.particlesLoaded}
+          options={particleOptions}
         />
         <Navigation />
         <Logo />
