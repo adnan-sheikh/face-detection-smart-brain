@@ -4,6 +4,7 @@ import 'tachyons';
 
 import Navigation from './Components/Navigation/Navigation';
 import Logo from './Components/Logo/Logo';
+import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
 
 class App extends Component {
@@ -12,6 +13,7 @@ class App extends Component {
       <div className='App'>
         <Navigation />
         <Logo />
+        <Rank />
         <ImageLinkForm />
         {/* <FaceRecognition /> */}
       </div>
