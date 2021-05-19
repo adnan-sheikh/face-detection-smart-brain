@@ -11,7 +11,7 @@ import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-  apiKey: '',
+  apiKey: '2a6d9a0d95d24da2a7c4801414f10779',
 });
 
 const particleOptions = {
@@ -65,8 +65,25 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      box: {},
     };
   }
+
+  calculateFaceLocation = (boundingBox) => {
+    const image = document.getElementById('inputImage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    return {
+      leftCol: boundingBox.left_col * width,
+      topRow: boundingBox.top_row * height,
+      rightCol: width - boundingBox.right_col * width,
+      bottomRow: height - boundingBox.bottom_row * height,
+    };
+  };
+
+  displayFaceBox = (box) => {
+    this.setState({ box: box });
+  };
 
   particlesInit(main) {
     console.log(main);
@@ -89,9 +106,9 @@ class App extends Component {
         id: Clarifai.FACE_DETECT_MODEL,
         version: '45fb9a671625463fa646c3523a3087d5',
       })
-      .then((generalModel) => {
+      .then((faceModel) => {
         if (this.state.imageUrl.includes('.jpg')) {
-          return generalModel.predict(this.state.imageUrl);
+          return faceModel.predict(this.state.imageUrl);
         }
         console.log('please use images with .jpg extension');
       })
@@ -105,17 +122,21 @@ class App extends Component {
         } else {
           if (data.regions.length === 1) {
             console.log(
-              `I can only identify ${data.regions.length} face in this image.`
+              `I can identify ${data.regions.length} face in this image.`
             );
           } else {
             console.log(
               `I can identify ${data.regions.length} faces in this image.`
             );
           }
+          const boxArray = data.regions.map(box => box.region_info.bounding_box);
+          console.log('boxArray: ', boxArray);
           const boundingBox = data.regions[0].region_info.bounding_box;
           console.log(boundingBox);
+          this.displayFaceBox(this.calculateFaceLocation(boundingBox));
         }
-      });
+      })
+      .catch((error) => console.log(error));
   };
 
   render() {
@@ -135,7 +156,7 @@ class App extends Component {
           onInputChange={this.handleInputChange}
           onButtonSubmit={this.handleButtonSubmit}
         />
-        <FaceRecognition imageUrl={this.state.imageUrl} />
+        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
       </div>
     );
   }
