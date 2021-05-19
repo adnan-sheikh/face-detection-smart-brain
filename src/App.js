@@ -60,12 +60,10 @@ const particleOptions = {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.particlesInit = this.particlesInit.bind(this);
-    this.particlesLoaded = this.particlesLoaded.bind(this);
     this.state = {
       input: '',
       imageUrl: '',
-      box: {},
+      boundingBoxes: [],
     };
   }
 
@@ -81,18 +79,6 @@ class App extends Component {
     };
   };
 
-  displayFaceBox = (box) => {
-    this.setState({ box: box });
-  };
-
-  particlesInit(main) {
-    console.log(main);
-  }
-
-  particlesLoaded(container) {
-    console.log(container);
-  }
-
   handleInputChange = ({ target }) => {
     this.setState({
       input: target.value,
@@ -100,6 +86,7 @@ class App extends Component {
   };
 
   handleButtonSubmit = () => {
+    this.setState({box: []});
     this.setState({ imageUrl: this.state.input });
     app.models
       .initModel({
@@ -114,7 +101,6 @@ class App extends Component {
       })
       .then((response) => {
         const data = response.outputs[0].data;
-        console.log(data);
         if (!data.regions) {
           console.log(
             'There are no faces in this image. Try for some images including faces!'
@@ -129,14 +115,17 @@ class App extends Component {
               `I can identify ${data.regions.length} faces in this image.`
             );
           }
-          const boxArray = data.regions.map(box => box.region_info.bounding_box);
-          console.log('boxArray: ', boxArray);
-          const boundingBox = data.regions[0].region_info.bounding_box;
-          console.log(boundingBox);
-          this.displayFaceBox(this.calculateFaceLocation(boundingBox));
+          const boundingBoxArray = data.regions.map(
+            (box) => box.region_info.bounding_box
+          );
+          this.setState({
+            boundingBoxes: boundingBoxArray.map((boundingBox) =>
+              this.calculateFaceLocation(boundingBox)
+            ),
+          });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log('Ohhh no!', error));
   };
 
   render() {
@@ -145,8 +134,6 @@ class App extends Component {
         <Particles
           className='particles'
           id='tsparticles'
-          init={this.particlesInit}
-          loaded={this.particlesLoaded}
           options={particleOptions}
         />
         <Navigation />
@@ -156,7 +143,11 @@ class App extends Component {
           onInputChange={this.handleInputChange}
           onButtonSubmit={this.handleButtonSubmit}
         />
-        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
+        <FaceRecognition
+          boundingBoxes={this.state.boundingBoxes}
+          imageUrl={this.state.imageUrl}
+          boundingBoxesLength={this.state.boundingBoxes.length}
+        />
       </div>
     );
   }

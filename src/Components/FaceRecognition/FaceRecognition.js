@@ -1,12 +1,25 @@
 import React from 'react';
 import './FaceRecognition.css';
 
-const FaceRecognition = ({ imageUrl, box }) => {
+const FaceRecognition = ({ imageUrl, boundingBoxes }) => {
   return (
     <div className='flex justify-center'>
       <div className='mt4 image-container'>
         <img id='inputImage' src={imageUrl} alt='' width='500px' />
-        <div className='bounding-box' style={{top: box.topRow, right: box.rightCol, bottom: box.bottomRow, left: box.leftCol}} ></div>
+        {boundingBoxes.map((boundingBox, index) => {
+          return (
+            <div
+              className='bounding-box'
+              key={index + 1}
+              style={{
+                top: boundingBox.topRow,
+                right: boundingBox.rightCol,
+                bottom: boundingBox.bottomRow,
+                left: boundingBox.leftCol,
+              }}
+            ></div>
+          );
+        })}
       </div>
     </div>
   );
