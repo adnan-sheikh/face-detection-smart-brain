@@ -9,53 +9,56 @@ import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
 
 const particleOptions = {
-            particles: {
-              color: {
-                value: '#ffffff',
-              },
-              links: {
-                color: '#ffffff',
-                distance: 150,
-                enable: true,
-                opacity: 0.5,
-                width: 1,
-              },
-              collisions: {
-                enable: true,
-              },
-              move: {
-                direction: 'none',
-                enable: true,
-                outMode: 'bounce',
-                random: false,
-                speed: 1,
-                straight: false,
-              },
-              number: {
-                density: {
-                  enable: true,
-                  value_area: 800,
-                },
-                value: 70,
-              },
-              opacity: {
-                value: 0.5,
-              },
-              shape: {
-                type: 'circle',
-              },
-              size: {
-                random: true,
-                value: 3,
-              },
-            },
-          };
+  particles: {
+    color: {
+      value: '#ffffff',
+    },
+    links: {
+      color: '#ffffff',
+      distance: 150,
+      enable: true,
+      opacity: 0.5,
+      width: 1,
+    },
+    collisions: {
+      enable: true,
+    },
+    move: {
+      direction: 'none',
+      enable: true,
+      outMode: 'bounce',
+      random: false,
+      speed: 1,
+      straight: false,
+    },
+    number: {
+      density: {
+        enable: true,
+        value_area: 800,
+      },
+      value: 70,
+    },
+    opacity: {
+      value: 0.5,
+    },
+    shape: {
+      type: 'circle',
+    },
+    size: {
+      random: true,
+      value: 3,
+    },
+  },
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.particlesInit = this.particlesInit.bind(this);
     this.particlesLoaded = this.particlesLoaded.bind(this);
+    this.state = {
+      input: '',
+    };
   }
 
   particlesInit(main) {
@@ -66,6 +69,16 @@ class App extends Component {
     console.log(container);
   }
 
+  handleInputChange = ({ target }) => {
+    this.setState({
+      input: target.value,
+    });
+  };
+
+  handleButtonSubmit = ({ target }) => {
+    console.log('Click');
+  }
+  
   render() {
     return (
       <div className='App'>
@@ -79,7 +92,10 @@ class App extends Component {
         <Navigation />
         <Logo />
         <Rank />
-        <ImageLinkForm />
+        <ImageLinkForm
+          onInputChange={this.handleInputChange}
+          onButtonSubmit={this.handleButtonSubmit}
+        />
         {/* <FaceRecognition /> */}
       </div>
     );
