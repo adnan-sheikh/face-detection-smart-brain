@@ -7,6 +7,12 @@ import Navigation from './Components/Navigation/Navigation';
 import Logo from './Components/Logo/Logo';
 import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
+import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
+import Clarifai from 'clarifai';
+
+const app = new Clarifai.App({
+  apiKey: '',
+});
 
 const particleOptions = {
   particles: {
@@ -58,6 +64,7 @@ class App extends Component {
     this.particlesLoaded = this.particlesLoaded.bind(this);
     this.state = {
       input: '',
+      imageUrl: '',
     };
   }
 
@@ -75,10 +82,42 @@ class App extends Component {
     });
   };
 
-  handleButtonSubmit = ({ target }) => {
-    console.log('Click');
-  }
-  
+  handleButtonSubmit = () => {
+    this.setState({ imageUrl: this.state.input });
+    app.models
+      .initModel({
+        id: Clarifai.FACE_DETECT_MODEL,
+        version: '45fb9a671625463fa646c3523a3087d5',
+      })
+      .then((generalModel) => {
+        if (this.state.imageUrl.includes('.jpg')) {
+          return generalModel.predict(this.state.imageUrl);
+        }
+        console.log('please use images with .jpg extension');
+      })
+      .then((response) => {
+        const data = response.outputs[0].data;
+        console.log(data);
+        if (!data.regions) {
+          console.log(
+            'There are no faces in this image. Try for some images including faces!'
+          );
+        } else {
+          if (data.regions.length === 1) {
+            console.log(
+              `I can only identify ${data.regions.length} face in this image.`
+            );
+          } else {
+            console.log(
+              `I can identify ${data.regions.length} faces in this image.`
+            );
+          }
+          const boundingBox = data.regions[0].region_info.bounding_box;
+          console.log(boundingBox);
+        }
+      });
+  };
+
   render() {
     return (
       <div className='App'>
@@ -96,7 +135,7 @@ class App extends Component {
           onInputChange={this.handleInputChange}
           onButtonSubmit={this.handleButtonSubmit}
         />
-        {/* <FaceRecognition /> */}
+        <FaceRecognition imageUrl={this.state.imageUrl} />
       </div>
     );
   }
