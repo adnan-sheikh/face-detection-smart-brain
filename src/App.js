@@ -101,6 +101,7 @@ class App extends Component {
         if (this.state.imageUrl.includes('.jpg')) {
           return faceModel.predict(this.state.imageUrl);
         }
+        this.setState({ isThereAnyFace: false });
         console.log('please use images with .jpg extension');
       })
       .then((response) => {
