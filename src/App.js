@@ -11,7 +11,7 @@ import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-  apiKey: 'cd310cc6e7404b1d837724adbc53e4a5',
+  apiKey: '',
 });
 
 const particleOptions = {
@@ -64,6 +64,7 @@ class App extends Component {
       input: '',
       imageUrl: '',
       boundingBoxes: [],
+      isThereAnyFace: true,
     };
   }
 
@@ -102,10 +103,12 @@ class App extends Component {
       .then((response) => {
         const data = response.outputs[0].data;
         if (!data.regions) {
+          this.setState({ isThereAnyFace: false });
           console.log(
             'There are no faces in this image. Try for some images including faces!'
           );
         } else {
+          this.setState({ isThereAnyFace: true });
           if (data.regions.length === 1) {
             console.log(
               `I can identify ${data.regions.length} face in this image.`
@@ -147,6 +150,7 @@ class App extends Component {
           boundingBoxes={this.state.boundingBoxes}
           imageUrl={this.state.imageUrl}
           boundingBoxesLength={this.state.boundingBoxes.length}
+          isThereAnyFace={this.state.isThereAnyFace}
         />
       </div>
     );
