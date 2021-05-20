@@ -4,7 +4,7 @@ const Navigation = ({ onRouteChange }) => {
   return (
     <nav className='flex justify-end'>
       <p
-        className='f3 link dim black underline pa3 pointer'
+        className='b br2 ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib ma3'
         onClick={() => onRouteChange('signin')}
       >
         Sign Out
