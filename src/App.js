@@ -5,6 +5,7 @@ import Particles from 'react-tsparticles';
 
 import Navigation from './Components/Navigation/Navigation';
 import SignIn from './Components/SignIn/SignIn';
+import Register from './Components/Register/Register';
 import Logo from './Components/Logo/Logo';
 import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
@@ -138,6 +139,7 @@ class App extends Component {
   };
 
   render() {
+    const { imageUrl, boundingBoxes, isThereAnyFace, route } = this.state;
     return (
       <div className='App'>
         <Particles
@@ -145,9 +147,7 @@ class App extends Component {
           id='tsparticles'
           options={particleOptions}
         />
-        {this.state.route === 'signin' ? (
-          <SignIn onRouteChange={this.handleRouteChange} />
-        ) : (
+        {route === 'home' ? (
           <>
             <Navigation onRouteChange={this.handleRouteChange} />
             <Logo />
@@ -157,12 +157,15 @@ class App extends Component {
               onButtonSubmit={this.handleButtonSubmit}
             />
             <FaceRecognition
-              boundingBoxes={this.state.boundingBoxes}
-              imageUrl={this.state.imageUrl}
-              boundingBoxesLength={this.state.boundingBoxes.length}
-              isThereAnyFace={this.state.isThereAnyFace}
+              boundingBoxes={boundingBoxes}
+              imageUrl={imageUrl}
+              isThereAnyFace={isThereAnyFace}
             />
           </>
+        ) : route === 'signin' ? (
+          <SignIn onRouteChange={this.handleRouteChange} />
+        ) : (
+          <Register onRouteChange={this.handleRouteChange} />
         )}
       </div>
     );
