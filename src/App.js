@@ -11,7 +11,7 @@ import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-  apiKey: '',
+  apiKey: 'cd310cc6e7404b1d837724adbc53e4a5',
 });
 
 const particleOptions = {
@@ -64,6 +64,9 @@ class App extends Component {
       input: '',
       imageUrl: '',
       boundingBoxes: [],
+      numberOfFaces: 0,
+      isThereAnyFace: true,
+      isImageFetched: false,
     };
   }
 
@@ -71,6 +74,7 @@ class App extends Component {
     const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
+    console.log(width);
     return {
       leftCol: boundingBox.left_col * width,
       topRow: boundingBox.top_row * height,
@@ -86,8 +90,11 @@ class App extends Component {
   };
 
   handleButtonSubmit = () => {
-    this.setState({box: []});
-    this.setState({ imageUrl: this.state.input });
+    this.setState({
+      isImageFetched: true,
+      box: [],
+      imageUrl: this.state.input,
+    });
     app.models
       .initModel({
         id: Clarifai.FACE_DETECT_MODEL,
@@ -95,26 +102,25 @@ class App extends Component {
       })
       .then((faceModel) => {
         if (this.state.imageUrl.includes('.jpg')) {
-          return faceModel.predict(this.state.imageUrl);
+          return faceModel.predict(this.state.input);
         }
         console.log('please use images with .jpg extension');
       })
       .then((response) => {
         const data = response.outputs[0].data;
         if (!data.regions) {
-          console.log(
-            'There are no faces in this image. Try for some images including faces!'
-          );
+          this.setState({ isThereAnyFace: false });
         } else {
-          if (data.regions.length === 1) {
-            console.log(
-              `I can identify ${data.regions.length} face in this image.`
-            );
-          } else {
-            console.log(
-              `I can identify ${data.regions.length} faces in this image.`
-            );
-          }
+          // if (data.regions.length === 1) {
+          //   console.log(
+          //     `I can identify ${data.regions.length} face in this image.`
+          //   );
+          // } else {
+          //   console.log(
+          //     `I can identify ${data.regions.length} faces in this image.`
+          //   );
+          // }
+          this.setState({ numberOfFaces: data.regions.length });
           const boundingBoxArray = data.regions.map(
             (box) => box.region_info.bounding_box
           );
@@ -147,6 +153,9 @@ class App extends Component {
           boundingBoxes={this.state.boundingBoxes}
           imageUrl={this.state.imageUrl}
           boundingBoxesLength={this.state.boundingBoxes.length}
+          isThereAnyFace={this.state.isThereAnyFace}
+          numberOfFaces={this.state.numberOfFaces}
+          isImageFetched={this.state.isImageFetched}
         />
       </div>
     );
