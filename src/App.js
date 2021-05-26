@@ -13,7 +13,7 @@ import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-  apiKey: '',
+  apiKey: 'apikey',
 });
 
 const particleOptions = {
@@ -69,6 +69,12 @@ class App extends Component {
       isThereAnyFace: true,
       route: 'signin',
     };
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:3000')
+      .then(response => response.json())
+      .then(console.log);
   }
 
   calculateFaceLocation = (boundingBox) => {
