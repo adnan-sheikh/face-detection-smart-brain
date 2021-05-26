@@ -125,6 +125,17 @@ class App extends Component {
       })
       .then((response) => {
         const data = response.outputs[0].data;
+        if (response) {
+          fetch('http://localhost:3000/image', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: this.state.user.id }),
+          })
+            .then((response) => response.json())
+            .then((count) => {
+              this.setState(Object.assign(this.state.user, { entries: count }));
+            });
+        }
         if (!data.regions) {
           this.setState({ isThereAnyFace: false });
           console.log(
