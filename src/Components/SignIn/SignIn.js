@@ -1,6 +1,39 @@
 import React, { Component } from 'react';
 
 class SignIn extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      signInEmail: '',
+      signInPassword: '',
+    };
+  }
+
+  handleEmailChange = ({ target }) => {
+    this.setState({ signInEmail: target.value });
+  };
+
+  handlePasswordChange = ({ target }) => {
+    this.setState({ signInPassword: target.value });
+  };
+
+  handleSubmitSignIn = () => {
+    fetch('http://localhost:3000/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: this.state.signInEmail,
+        password: this.state.signInPassword,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data === 'success') {
+          this.props.onRouteChange('home');
+        }
+      });
+  };
+
   render() {
     const { onRouteChange } = this.props;
     return (
@@ -19,6 +52,7 @@ class SignIn extends Component {
                     type='email'
                     name='email-address'
                     id='email-address'
+                    onChange={this.handleEmailChange}
                   />
                 </div>
                 <div className='mv3'>
@@ -30,6 +64,7 @@ class SignIn extends Component {
                     type='password'
                     name='password'
                     id='password'
+                    onChange={this.handlePasswordChange}
                   />
                 </div>
               </fieldset>
@@ -38,7 +73,7 @@ class SignIn extends Component {
                   className='b br2 ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib'
                   type='submit'
                   value='Sign in'
-                  onClick={() => onRouteChange('home')}
+                  onClick={this.handleSubmitSignIn}
                 />
               </div>
               <div className='lh-copy mt3'>
