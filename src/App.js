@@ -68,8 +68,27 @@ class App extends Component {
       boundingBoxes: [],
       isThereAnyFace: true,
       route: 'signin',
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: '',
+      },
     };
   }
+
+  loadUser = (newUser) => {
+    this.setState({
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        entries: newUser.entries,
+        joined: newUser.joined,
+      },
+    });
+  };
 
   calculateFaceLocation = (boundingBox) => {
     const image = document.getElementById('inputImage');
@@ -140,7 +159,7 @@ class App extends Component {
   };
 
   render() {
-    const { imageUrl, boundingBoxes, isThereAnyFace, route } = this.state;
+    const { imageUrl, boundingBoxes, isThereAnyFace, route, user } = this.state;
     return (
       <div className='App'>
         <Particles
@@ -152,7 +171,7 @@ class App extends Component {
           <>
             <Navigation onRouteChange={this.handleRouteChange} />
             <Logo />
-            <Rank />
+            <Rank name={user.name} entries={user.entries} />
             <ImageLinkForm
               onInputChange={this.handleInputChange}
               onButtonSubmit={this.handleButtonSubmit}
@@ -164,9 +183,15 @@ class App extends Component {
             />
           </>
         ) : route === 'signin' ? (
-          <SignIn onRouteChange={this.handleRouteChange} />
+          <SignIn
+            loadUser={this.loadUser}
+            onRouteChange={this.handleRouteChange}
+          />
         ) : (
-          <Register onRouteChange={this.handleRouteChange} />
+          <Register
+            loadUser={this.loadUser}
+            onRouteChange={this.handleRouteChange}
+          />
         )}
       </div>
     );
