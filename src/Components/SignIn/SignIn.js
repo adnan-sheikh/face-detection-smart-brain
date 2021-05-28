@@ -18,7 +18,7 @@ class SignIn extends Component {
   };
 
   handleSubmitSignIn = () => {
-    fetch('http://localhost:3000/signin', {
+    fetch('https://evening-ocean-62088.herokuapp.com/signin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -32,7 +32,8 @@ class SignIn extends Component {
           this.props.loadUser(user);
           this.props.onRouteChange('home');
         }
-      });
+      })
+      .catch(console.log);
   };
 
   render() {

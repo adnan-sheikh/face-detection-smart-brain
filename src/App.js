@@ -10,11 +10,6 @@ import Logo from './Components/Logo/Logo';
 import Rank from './Components/Rank/Rank';
 import ImageLinkForm from './Components/ImageLinkForm/ImageLinkForm';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
-import Clarifai from 'clarifai';
-
-const app = new Clarifai.App({
-  apiKey: '',
-});
 
 const particleOptions = {
   particles: {
@@ -60,19 +55,19 @@ const particleOptions = {
 };
 
 const initialState = {
-      input: '',
-      imageUrl: '',
-      boundingBoxes: [],
-      isThereAnyFace: true,
-      route: 'signin',
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: '',
-      },
-    }
+  input: '',
+  imageUrl: '',
+  boundingBoxes: [],
+  isThereAnyFace: true,
+  route: 'signin',
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: '',
+  },
+};
 
 class App extends Component {
   constructor(props) {
@@ -113,22 +108,16 @@ class App extends Component {
   handleButtonSubmit = () => {
     this.setState({ box: [] });
     this.setState({ imageUrl: this.state.input });
-    app.models
-      .initModel({
-        id: Clarifai.FACE_DETECT_MODEL,
-        version: '45fb9a671625463fa646c3523a3087d5',
-      })
-      .then((faceModel) => {
-        if (this.state.imageUrl.includes('.jpg')) {
-          return faceModel.predict(this.state.imageUrl);
-        }
-        this.setState({ isThereAnyFace: false });
-        console.log('please use images with .jpg extension');
-      })
+    fetch('https://evening-ocean-62088.herokuapp.com/imageurl', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: this.state.input }),
+    })
+      .then((response) => response.json())
       .then((response) => {
         const data = response.outputs[0].data;
         if (response) {
-          fetch('http://localhost:3000/image', {
+          fetch('https://evening-ocean-62088.herokuapp.com/image', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: this.state.user.id }),
