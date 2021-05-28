@@ -13,7 +13,7 @@ import FaceRecognition from './Components/FaceRecognition/FaceRecognition';
 import Clarifai from 'clarifai';
 
 const app = new Clarifai.App({
-  apiKey: 'apikey',
+  apiKey: '',
 });
 
 const particleOptions = {
@@ -59,10 +59,7 @@ const particleOptions = {
   },
 };
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+const initialState = {
       input: '',
       imageUrl: '',
       boundingBoxes: [],
@@ -75,7 +72,12 @@ class App extends Component {
         entries: 0,
         joined: '',
       },
-    };
+    }
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = initialState;
   }
 
   loadUser = (newUser) => {
@@ -134,7 +136,8 @@ class App extends Component {
             .then((response) => response.json())
             .then((count) => {
               this.setState(Object.assign(this.state.user, { entries: count }));
-            });
+            })
+            .catch(console.log);
         }
         if (!data.regions) {
           this.setState({ isThereAnyFace: false });
@@ -166,6 +169,9 @@ class App extends Component {
   };
 
   handleRouteChange = (newRoute) => {
+    if (newRoute === 'signin') {
+      this.setState(initialState);
+    }
     this.setState({ route: newRoute });
   };
 
